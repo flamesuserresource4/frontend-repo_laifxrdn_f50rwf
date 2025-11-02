@@ -1,5 +1,4 @@
-import { useMemo } from 'react';
-import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 import { ArrowRight, Rocket, Sparkles } from 'lucide-react';
 
@@ -9,37 +8,14 @@ const textVariants = {
 };
 
 export default function Hero({ onLoaded, onCtaClick }) {
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
-  const transform = useMotionTemplate`perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-
-  const handleMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const px = (x / rect.width) * 2 - 1; // -1 to 1
-    const py = (y / rect.height) * 2 - 1; // -1 to 1
-    // Increase range of motion for a more dynamic feel
-    ry.set(px * 12);
-    rx.set(-py * 10);
-  };
-
-  const handleLeave = () => {
-    rx.set(0);
-    ry.set(0);
-  };
-
   return (
     <section className="relative min-h-[110vh] w-full overflow-hidden" aria-label="Hero">
-      <motion.div
-        className="absolute inset-0"
-        style={{ transform }}
-        onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
-      >
+      {/* 3D scene without mouse-reactive tilt */}
+      <div className="absolute inset-0">
         <Spline scene="https://prod.spline.design/VyGeZv58yuk8j7Yy/scene.splinecode" style={{ width: '100%', height: '100%' }} onLoad={onLoaded} />
-      </motion.div>
+      </div>
 
+      {/* Gradient overlay should not block interaction with the 3D scene */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(17,17,17,0)_0%,rgba(0,0,0,0.25)_40%,rgba(0,0,0,0.9)_100%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 pt-40 pb-32">
